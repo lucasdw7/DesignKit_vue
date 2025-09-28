@@ -1,0 +1,158 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+
+
+@plugin "daisyui/theme" {
+  name: "DK_light1";
+  default: true;
+ prefersdark: true;  /*changer en false pour le mode dark */
+  color-scheme: "light";
+  --color-base-100: rgba(241, 245, 249, 1);
+  --color-base-200: rgba(226, 232, 240, 1);
+  --color-base-300: rgba(203, 213, 225, 1);
+  --color-base-content: rgba(30, 41, 59, 1);
+  --color-primary: rgba(148, 163, 184, 1);
+  --color-primary-content: rgba(30, 41, 59, 1);
+  --color-secondary: rgba(71, 85, 105, 1);
+  --color-secondary-content: rgba(241, 245, 249, 1);
+  --color-accent: rgba(7, 81, 201, 1);
+  --color-accent-content: rgba(241, 245, 249, 1);
+  --color-neutral: rgba(30, 41, 59, 1);
+  --color-neutral-content: oklch(98% 0.002 247.839);
+  --color-info: rgba(169, 201, 251, 1);
+  --color-info-content: rgba(30, 41, 59, 1);
+  --color-success: rgba(38, 228, 109, 1);
+  --color-success-content: rgba(30, 41, 59, 1);
+  --color-warning: rgba(250, 204, 21, 1);
+  --color-warning-content: rgba(30, 41, 59, 1);
+  --color-error: rgba(184, 8, 38, 1);
+  --color-error-content: rgba(241, 245, 249, 1);
+  --radius-selector: 2rem;
+  --radius-field: 1rem;
+  --radius-box: 1rem;
+  --size-selector: 0.28125rem;
+  --size-field: 0.28125rem;
+  --border: 0px;
+  --depth: 1;
+  --noise: 1;
+}
+
+/* @plugin "daisyui/theme" {
+  name: "DK_dark1";
+  default: false;
+  prefersdark: true;
+  color-scheme: "dark";
+  --color-base-100: rgba(30, 41, 59, 1);
+  --color-base-200: rgba(51, 65, 85, 1);
+  --color-base-300: rgba(71, 85, 105, 1);
+  --color-base-content: rgba(241, 245, 249, 1);
+  --color-primary: rgba(203, 213, 225, 1);
+  --color-primary-content: rgba(30, 41, 59, 1);
+  --color-secondary: rgba(148, 163, 184, 1);
+  --color-secondary-content: rgba(30, 41, 59, 1);
+  --color-accent: rgba(7, 81, 201, 1);
+  --color-accent-content: rgba(241, 245, 249, 1);
+  --color-neutral: rgba(241, 245, 249, 1);
+  --color-neutral-content: rgba(30, 41, 59, 1);
+  --color-info: rgba(169, 201, 251, 1);
+  --color-info-content: rgba(30, 41, 59, 1);
+  --color-success: rgba(38, 228, 109, 1);
+  --color-success-content: rgba(30, 41, 59, 1);
+  --color-warning: rgba(250, 204, 21, 1);
+  --color-warning-content: rgba(30, 41, 59, 1);
+  --color-error: rgba(184, 8, 38, 1);
+  --color-error-content: rgba(241, 245, 249, 1);
+  --radius-selector: 2rem;
+  --radius-field: 1rem;
+  --radius-box: 1rem;
+  --size-selector: 0.28125rem;
+  --size-field: 0.28125rem;
+  --border: 0px;
+  --depth: 1;
+  --noise: 1;
+} */
+
+
+
+
+/* Style de base  */
+/* :root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+.card {
+  padding: 2em;
+}
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+} */
