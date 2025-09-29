@@ -177,7 +177,9 @@ function hsvToRgb(hueColor, saturation, valueColor) {
 
 //Fonction pour convertir le RGB en Hexa 
 function rgbToHex({red,green,blue}) {
+  // Une variable qui pour chaque propriétes retourne 'n' convertie en string en base 16 , si la chaine à moins de 2 carractéres on complete avec des 0 sur la gauche (.padStart(2,'0')), et on mets les lettres en majuscules.
   const toHex = n => n.toString(16).padStart(2,'0').toUpperCase();
+  // On retourne alors la variables toHex pour chauqe popriétées de la fonction que l'on concatène avec # (écrit/ajoute)
   return `#${toHex(red)}${toHex(green)}${toHex(blue)}`;
 }
 
@@ -196,6 +198,8 @@ function rgbToCmyk(red,green,blue) {
     key: Math.round(key*100)
   };
 }
+
+//On vérifie que les fonction de conversion HSV, RGB et CMJK fonction est renvoie les valeur dans la console
 console.log(hue.value, sat.value, val.value, rgbObj.value, hex.value, cmykString.value);
 
 </script>
