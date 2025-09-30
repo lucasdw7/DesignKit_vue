@@ -1,71 +1,54 @@
 <template>
-  <!-- V1 pourrie
-    <div class="flex flex-col md:flex-row items-center justify-center gap-6 bg-base-200 p-6 rounded-lg">
-    <!-- Zone de sélection principale 
-    <div class="relative w-64 h-64 rounded-lg overflow-hidden">
-      <!-- Dégradé principal 
-      <div
-        class="absolute inset-0"
-        style="background: linear-gradient(to top, black, transparent), 
-               linear-gradient(to right, white, transparent), 
-               blue;"
-      ></div>
-      <!-- Curseur rond 
-      <div
-        class="absolute top-2 right-2 w-6 h-6 rounded-full border-2 border-white"
-      ></div>
-    </div>
 
-    <!-- Barre verticale de spectre 
-    <div class="relative w-6 h-64 rounded-full overflow-hidden">
-      <div
-        class="absolute inset-0"
-        style="background: linear-gradient(to top, red, yellow, lime, cyan, blue, magenta, red);"
-      ></div>
-      <!-- Curseur rond 
-      <div
-        class="absolute left-1/2 transform -translate-x-1/2 top-1/2 w-6 h-6 rounded-full border-2 border-white"
-      ></div>
-    </div>
-
-    <!-- Infos couleurs 
-    <div class="grid grid-cols-2 gap-4 bg-base-100 p-6 rounded-lg shadow-md">
-      <div>
-        <p class="font-semibold">RGB</p>
-        <p class="font-mono text-sm">#FFFFFF</p>
-      </div>
-      <div>
-        <p class="font-semibold">CMYK</p>
-        <p class="font-mono text-sm">#FFFFFF</p>
-      </div>
-      <div>
-        <p class="font-semibold">HEX</p>
-        <p class="font-mono text-sm">#FFFFFF</p>
-      </div>
-      <div>
-        <p class="font-semibold">HSL</p>
-        <p class="font-mono text-sm">#FFFFFF</p>
-      </div>
-      <div>
-        <p class="font-semibold">Websafe</p>
-        <p class="font-mono text-sm">#FFFFFF</p>
-      </div>
-      <div>
-        <p class="font-semibold">Accessibilty</p>
-        <p class="font-mono text-sm">#FFFFFF</p>
-      </div>
-    </div>
-  </div>
- -->
-
-  <section class="card bg-base-100 w-full p-4 rounded-none ">
+  <section class="card bg-base-100 w-full p-2 rounded-none ">
     <div class="card-body flex flex-row gap-4">
-<!-- block teintes -->
+<!-- block teintes 
+     Relative pour pouvoir positionner le curseur dedans
+     Les :Aria-"" servent a lier dynamiquement des valeurs pour les lecteurs d'écran:
+        - aria-label = décrire le conteneur et donner les valeurs de contraste de la teinte (saturation et value ( luminosité)
+        - aria-value = indique la valeurs minimal et maximal possible ainsi que la valeur de la couleur actuelle (la valeur de la couleurs sur une échelle de 1 )100)
+
+        @pointerdown.prevent="startSvPointer"
+        @keydown.prevent="onSVKeydown"
+        On écoute les événments "" quand on clic ou qu'on appuie sur le clavier, en empechant les action par défaut (espace pour faire defiler la page ou selection de texte par exemple) 
+     -->
       <div 
-        class="relative overflow-hidden w-full aspect-[4/3] rounded-xl shadow-inner bg-accent"
-        aria-label="Zone sélection de saturation et luminosité" 
+        class="relative overflow-hidden w-full aspect-[4/3] rounded-xl shadow-inner"
+        style="touch-action:none;"
+        ref="svRef"
         role="slider"
-        tabindex="0">
+        tabindex="0"
+        :aria-label="`Sélecteur de teinte (saturation et luminosité) : sat ${sat}% value ${val}%`"
+        :aria-valuemin="0" 
+        :aria-valuemax="100"
+        :aria-valuenow="sat"
+        @pointerdown.prevent="startSvPointer"
+        @keydown.prevent="onSVKeydown"
+      >
+
+        <!-- inset-0 = que l'élément prenne la taille dde sont conteneur (en absolute) -->
+        <!-- Couche de couleur de base (teinte actulle) qui récuperer les données de hexaAtFull pour les appliquées au style du conteneur (BG)  -->
+        <div class="absolute inset-0 rounded-xl"
+          :style="{ backgroundColor: hexAtFull }">
+        </div>
+          <!-- Couche dégrader blanc vers transparent (pour la saturation), 
+          On applique dynamiquement un dégrader au style du conteneur 
+          (de gauche à droite)  -->
+        <div class="absolute inset-0 rounded-xl"
+          :style="{ background: 'linear-gradient(to right, #fff, rgba(255,255,255,0))' }">
+        </div>
+         <!-- Couche degrader noir vers transparent (pour la luminosité),
+          (de haut en bas)  -->
+        <div class="absolute inset-0 rounded-xl"
+          :style="{ background: 'linear-gradient(to bottom, rgba(0,0,0,0), #000)' }">
+        </div>
+
+        <!-- Curseur  -->
+         <div
+              class="absolute w-4 h-4 rounded-full ring-2 ring-white/90 shadow-md -translate-x-1/2 -translate-y-1/2"
+              :style="{ left: sat + '%', top: (100 - val) + '%' }"
+              aria-hidden="true">
+          </div>
 
       </div>
 <!-- Block couleurs -->
@@ -80,7 +63,7 @@
       </div>
 
 <!-- Block Valeurs -->
-      <div class="card bg-error p-3">
+      <div class="card bg-base-300 w-2/3 p-2">
         <!-- Vue de la couleur et titre du block"Valeurs" -->
         <div class="flex items-center gap-3">
           <!-- Vue couleur -->
@@ -88,25 +71,25 @@
           <!-- Titre -->
           <div class="flex-1">
             <h3 class="font-medium">Valeurs</h3>
-            <div class="text-sm text-muted">code hex</div>
+            <div class="text-sm text-muted">{{ hex }}</div>
           </div>
         </div>
         <!-- Valeurs copiables -->
-        <div class="mt-3 flex flex-wrap gap-2 md:gap-8 p-4">
+        <div class="mt-3 flex flex-wrap gap-2 md:gap-8 p-2">
           <!-- Valeurs copiables Hexa -->
-          <div class="flex items-center justify-between">
+          <div class="flex flex-col md:flex-row items-start md:items-center gap-2">
                 <div class="text-xs font-medium">HEX</div>
-                <button class="btn btn-ghost btn-xs">#00JHGF</button>
+                <button class="btn btn-ghost btn-sm text-left md:text-center">{{ hex }}</button>
           </div>
           <!-- Valeurs copiables RGB -->
-          <div class="flex items-center justify-between">
-                <div class="text-xs font-medium">HEX</div>
-                <button class="btn btn-ghost btn-xs">#00JHGF</button>
+          <div class="flex flex-col md:flex-row items-start md:items-center gap-2">
+                <div class="text-xs font-medium">RGB</div>
+                <button class="btn btn-ghost btn-sm text-left md:text-center">{{ rgbString }}</button>
           </div>
           <!-- Valeurs copiables  CMJN-->
-          <div class="flex items-center justify-between">
-                <div class="text-xs font-medium">HEX</div>
-                <button class="btn btn-ghost btn-xs">#00JHGF</button>
+          <div class="flex flex-col md:flex-row items-start md:items-center gap-2">
+                <div class="text-xs font-medium">CMJN</div>
+                <button class="btn btn-ghost btn-sm text-left md:text-center">{{ cmykString }}</button>
           </div>
         </div>
       </div>
@@ -122,6 +105,11 @@ import { computed, watch, onMounted, onUpdated, onBeforeUnmount,ref } from 'vue'
 const hue = ref(0); //teinte
 const sat = ref(100); //saturation
 const val = ref(100); //valeur
+
+// Initialisation de curseur pour les manipulés 
+// (Pour écouter et calculé la teinte et la couleur en fonction de sa position)
+const svRef = ref(null);
+// const hueRef = ref(null);
 
 // On pour calculé(convertir) les valeurs HSV (hue, sat, val) en valeurs RGB grace à la fonction "hsvToRgb"
 const rgbObj = computed(() => hsvToRgb(hue.value, sat.value, val.value));
@@ -141,7 +129,7 @@ const cmykString = computed(() => {
 // Fonction pour définir une gradutation max et min au valeurs des couleurs 
 function clamp(graduation, minGraduation, MaxGraduation) { return Math.max(minGraduation, Math.min(MaxGraduation, graduation)); }
 
-// Conversions
+// Conversions----------------------------------------//
 // Fonction pour convertir le HSV en RGB qui attend comme valeurs hueColor (teinte), saturation, valueColor (couleur de base/valeur)
 function hsvToRgb(hueColor, saturation, valueColor) {
   //On indique que saturation et la valeur sont diviser par 100 pour facilité les calcul (exemple 50% deviens 0.5)
@@ -185,12 +173,25 @@ function rgbToHex({red,green,blue}) {
 
 //Fonction pour convertir le RGB en CMYK
 function rgbToCmyk(red,green,blue) {
+  // Si red , green, blue =0 on retourne ces propriétées à 0 avec un Key à 100 pour avoir du noir pur
   if (red===0 && green===0 && blue===0) return { cyan:0,magenta:0,yellow:0,key:100 };
+  // Sinom on commence par diviser chaque propriété par 255 pour ramener les valeurs entre 0 et 1 (plus facile à manipuler (on vas de 0.255 ou 0.1))
   red /= 255; green /= 255; blue /= 255;
+  // Pour Key on soustrait 1 à la propriétée la plus forte ( la plus clair) 
+  // Pour mesurer la noirceur (key) attribuer à la couleur trouver la valeur la plus claire pour déterminer combien de noir on ajoute à la couleur
   const key = 1 - Math.max(red,green,blue);
+  // Pour Cyan on soustrait le noir et le rouge a valeur (1 qui est le cyan) pour 
+  // avoir la quantité de cyan 
+  // ex: 1-0.5-0.2=0.3 de cyan dans la couleur 
+  // Et on divise par la valeur (1) - key (noir) pour ramené à l'echelle (0.1)
   const cyan = (1 - red - key) / (1 - key);
+  // Même logique pour Magenta 
   const magenta = (1 - green - key) / (1 - key);
+  // Même logique pour Magenta 
   const yellow = (1 - blue - key) / (1 - key);
+  // On retrourne chaque valeur divisier par 100 et arrondit à l'entier le plus proche 
+  // On divise par 100 pour convertire en pourcentage (de 0.1 à 0.100) 
+  // Et on arrondie pour avoir un pourcentage entier 
   return {
     cyan: Math.round(cyan*100),
     magenta: Math.round(magenta*100),
@@ -202,6 +203,82 @@ function rgbToCmyk(red,green,blue) {
 //On vérifie que les fonction de conversion HSV, RGB et CMJK fonction est renvoie les valeur dans la console
 console.log(hue.value, sat.value, val.value, rgbObj.value, hex.value, cmykString.value);
 
+//Manipulation du pointeur du block de teinte -------------------------//
+// (teinte/contrastre= saturation() et luminosité(val) "valeur HSV")
+
+// On commence par initialisé un variable pour stocké la valeur (l'id) du pointeur 
+let svPointerId = null;
+// Fonction qui récupere le parametre pointerEvent 
+// (qui récuperer l'évenement du clic par l'utilisateur)
+function startSvPointer(pointerEvent) {
+  // On initialise une variable qui récupere la valeur de l'élement svRef (la zone de teinte)
+  const pointerElement = svRef.value;
+  // Si pointerElement na pas de valeur on retourne : 
+  if (!pointerElement) return;
+    //on dit a l'élément de capturer tous les evenements du pointeur pour un clic en particulier (.? securité pour  vérifier la méthode avant de l'appeler)
+    pointerElement.setPointerCapture?.(pointerEvent.pointerId);
+    // on défini l'identitfiant du pointeur comme valeur de svPointerId
+    svPointerId = pointerEvent.pointerId;
+    //fonction qui va récuperer la valeur du parametre pour mettre a jour les donnée de la teinte
+    updateSVPointerEvent(pointerEvent);
+    // On ajoute les evenements à la fenetre ( conteneur teintes) qui feras que : 
+    // - à chaque fois que la souris bouge meme en dehors du block le pointer bougera aussi. 
+    // - quand l'utilisateur relache le clic le pointer sera nettoyer et libérer avant que cette événment ne ce suprime aprés son déclanchement 
+    window.addEventListener('pointermove', onSVPointerMove);
+    window.addEventListener('pointerup', onSVPointerUp, { once: true });
+}
+// Fonction qui vérifie si on utilise le bon pointer avant de mettre a jour les valeurs de teinte (si c'est le bon pointer)
+function onSVPointerMove(pointerEvent) {
+  if (pointerEvent.pointerId !== svPointerId) return;
+  updateSVPointerEvent(pointerEvent);
+}
+// Fonction pour nettoyer (retirer) l'événement et réintialise la valeur du pointer 
+function onSVPointerUp(pointerEvent) {
+  if (pointerEvent.pointerId !== svPointerId) return;
+  svPointerId = null;
+  window.removeEventListener('pointermove', onSVPointerMove);
+}
+// Fonction qui calcule les valeurs de luminosité(val) et de saturation(sat) en fonction de la position du pointer dans le block
+function updateSVPointerEvent(pointerEvent) {
+  // On initialise une variable qui récupere la valeur de l'élement svRef (la zone de teinte)
+  const pointerElement = svRef.value;
+  if (!pointerElement) return;
+  //on récupere la position et la taille de l'élément par rapport a la fenetre.
+     // getBoundingClientRect permet de connaitre la taille et la position d'un élément
+  const hvBlockSize = pointerElement.getBoundingClientRect();
+  // calcul les coordonnées du pointeur à l'interieur de l'éléments 
+  const PosXPointer = clamp(pointerEvent.clientX - hvBlockSize.left, 0, hvBlockSize.width);
+  const PosYPointer = clamp(pointerEvent.clientY - hvBlockSize.top, 0, hvBlockSize.height);
+  //On convertit la position en valeur 
+    // On arrondie à l'entier le résultat de 100 fois la position diviser par la taille du block,
+    //  -1 sert à inverser l'axe,
+    //  position / taille donne une fraction 0.1,
+    //  que l'on convertit en pourcentage avec *100
+  sat.value = Math.round((PosXPointer / hvBlockSize.width) * 100);
+  val.value = Math.round((1 - PosYPointer / hvBlockSize.height) * 100);
+}
+// fonction pour manipuler la position du curseur au clavier
+function onSVKeydown(pointerEvent) {
+  // Si touche Shift enfoncer + direction = déplacement de 5 en 5 sinom 1
+  const stepDirectionPointer = pointerEvent.shiftKey ? 5 : 1;
+  //Si l'évenement du pointeur a comme key la touche "fleche gauche" la valeur de la saturation sera égale à ça valeur moins la valeur de déplacement (entre 0 et 100)
+  if (pointerEvent.key === 'ArrowLeft') sat.value = clamp(sat.value - stepDirectionPointer, 0, 100);
+  else if (pointerEvent.key === 'ArrowRight') sat.value = clamp(sat.value + stepDirectionPointer, 0, 100);
+  else if (pointerEvent.key === 'ArrowUp') val.value = clamp(val.value + stepDirectionPointer, 0, 100);
+  else if (pointerEvent.key === 'ArrowDown') val.value = clamp(val.value - stepDirectionPointer, 0, 100);
+}
+
+
+// Nettoyage ---------------------------//
+
+// fonction qui permet de supprimer (détruire) les événement d'écoute qui sont acroché au composant quand mon composant n'est plus utilisé (cycle de vie) 
+// Sans ça :
+// Même si ton composant n’est plus affiché, les pointermove continueraient à déclencher les fonctions.
+// Résultat : erreurs en console, perte de performance, mémoire consommée inutilement.
+onBeforeUnmount(() => {
+  window.removeEventListener('pointermove', onSVPointerMove);
+  // window.removeEventListener('pointermove', onHuePointerMove);
+});
 </script>
 
 <style scoped lang="css"></style>
