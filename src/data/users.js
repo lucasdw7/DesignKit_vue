@@ -17,7 +17,7 @@ export const users = [
         ],
         typoScale: {
           baseSize: 16,
-          sizeUnity:'px',
+          sizeUnity: "px",
           ratio: 1.25,
           scaleLevels: 8,
           titleLevels: 4,
@@ -29,59 +29,59 @@ export const users = [
                 size: "2.44rem",
                 fontWeight: 700,
                 lineHeight: 1.2,
-                letterSpacing: "-0.02em"
+                letterSpacing: "-0.02em",
               },
               {
-               textLevel: "h2",
+                textLevel: "h2",
                 size: "1.95rem",
                 fontWeight: 600,
                 lineHeight: 1.25,
-                letterSpacing: "-0.01em"
+                letterSpacing: "-0.01em",
               },
               {
-               textLevel: "h3",
+                textLevel: "h3",
                 size: "1.56rem",
                 fontWeight: 600,
                 lineHeight: 1.3,
-                letterSpacing: "0em"
+                letterSpacing: "0em",
               },
               {
-               textLevel: "h4",
+                textLevel: "h4",
                 size: "1.25rem",
                 fontWeight: 500,
                 lineHeight: 1.35,
-                letterSpacing: "0em"
-              }
-            ]
+                letterSpacing: "0em",
+              },
+            ],
           },
           body: {
             fontFamily: "Roboto",
             scale: [
               {
-               textLevel: "body",
+                textLevel: "body",
                 size: "1rem",
                 fontWeight: 400,
                 lineHeight: 1.5,
-                letterSpacing: "0em"
+                letterSpacing: "0em",
               },
               {
-               textLevel: "small",
+                textLevel: "small",
                 size: "0.875rem",
                 fontWeight: 400,
                 lineHeight: 1.4,
-                letterSpacing: "0.01em"
+                letterSpacing: "0.01em",
               },
               {
-               textLevel: "caption",
+                textLevel: "caption",
                 size: "0.75rem",
                 fontWeight: 400,
                 lineHeight: 1.3,
-                letterSpacing: "0.02em"
-              }
-            ]
-          }
-        }
-      }
-    ]
-  }
+                letterSpacing: "0.02em",
+              },
+            ],
+          },
+        },
+      },
+    ],
+  },
 ];

@@ -1,54 +1,96 @@
 <template>
+  <section class="card bg-base-100 shadow-md mt-6">
+    <div class="card-body gap-4">
+      <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h2 class="card-title text-xl uppercase">Composer la palette</h2>
+          <p class="text-sm opacity-70">
+            Sélectionne une couleur puis applique-la à un rôle avant de sauvegarder.
+          </p>
+        </div>
 
-  <div class="flex justify-between items-center">
-    <!-- Gauche -->
-    <div class="flex items-center gap-4">
-       <router-link to="./">
-        <button class="btn btn-accent btn-circle flex items-center" tabindex="0">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-          aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-          </svg>
-        </button>
-      </router-link>
+        <div class="flex items-center gap-3">
+          <div>
+            <div class="text-xs uppercase opacity-60">Couleur active</div>
+            <div class="text-sm font-semibold">{{ selectedColor }}</div>
+          </div>
 
-     <router-link to="./">
-      <button class="btn btn-accent btn-circle flex items-center" tabindex="0">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-          aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-        </svg>
-      </button>
-    </router-link>
+          <div
+            class="h-12 w-12 rounded-2xl border border-base-300 shadow-sm"
+            :style="{ backgroundColor: selectedColor }"
+            aria-hidden="true"
+          ></div>
 
-     <router-link to="./">
-      <button class="btn btn-accent btn-circle flex items-center" tabindex="0">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-          aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-        </svg>
-      </button>
-    </router-link>
-  </div>
+          <button
+            type="button"
+            class="btn btn-accent"
+            :class="{ 'btn-disabled': saving }"
+            :disabled="saving"
+            @click="$emit('save-palette')"
+          >
+            {{ saving ? "Sauvegarde..." : "Sauvegarder dans Firebase" }}
+          </button>
+        </div>
+      </div>
 
-    <!-- Droit -->
-    <router-link to="../">
-      <button class="btn btn-accent btn-circle flex items-center" tabindex="0">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-          aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-        </svg>
-      </button>
-    </router-link>
-  </div>
+      <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+        <article
+          v-for="slot in paletteSlots"
+          :key="slot.name"
+          class="rounded-2xl border border-base-300 bg-base-200 p-4"
+        >
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <div class="text-sm font-semibold uppercase">{{ slot.label }}</div>
+              <div class="text-xs opacity-70">{{ palette[slot.name] }}</div>
+            </div>
 
+            <div
+              class="h-12 w-12 rounded-xl border border-base-300"
+              :style="{ backgroundColor: palette[slot.name] }"
+              aria-hidden="true"
+            ></div>
+          </div>
 
+          <button
+            type="button"
+            class="btn btn-outline btn-sm mt-4 w-full"
+            @click="$emit('assign-color', slot.name)"
+          >
+            Utiliser la couleur active pour {{ slot.label.toLowerCase() }}
+          </button>
+        </article>
+      </div>
+    </div>
+  </section>
 </template>
 
-<script setup lang='js'>
-import { computed, watch, onMounted, onUpdated, onBeforeUnmount, ref } from 'vue'
+<script setup lang="js">
+const props = defineProps({
+  palette: {
+    type: Object,
+    required: true,
+  },
+  selectedColor: {
+    type: String,
+    default: "#3B82F6",
+  },
+  saving: {
+    type: Boolean,
+    default: false,
+  },
+});
 
-import { RouterLink } from "vue-router";
+defineEmits(["assign-color", "save-palette"]);
+
+const paletteSlots = [
+  { name: "primary", label: "Primary" },
+  { name: "secondary", label: "Secondary" },
+  { name: "accent", label: "Accent" },
+  { name: "background", label: "Background" },
+  { name: "text", label: "Text" },
+  { name: "success", label: "Success" },
+];
 </script>
 
 <style scoped lang="css"></style>

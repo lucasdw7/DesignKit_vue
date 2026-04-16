@@ -20,8 +20,8 @@ Points importants :
     <!-- ✅ Conteneur principal du contenu (centré et responsive) -->
     <main class="flex-1 w-full max-w-7xl mx-auto p-4 md:p-8">
       <!-- <ToolsBar/>
-       <ColorContent/>
-       <TypoContent/> -->
+      <ColorContent/>
+      <TypoContent/> -->
       <!-- Zone dynamique où s’affichent les composants selon la route -->
       <router-view></router-view>
       <!-- Exemple de contenu temporaire pour tester :
@@ -48,7 +48,7 @@ import AppFooter from './components/AppFooter.vue';
 
 <style>
 /* Styles globaux (optionnels) :
-   - Ajouter ici des styles partagés si vous ne gérez pas un fichier global main.css
-   - Exemple : personnalisation de la couleur de fond, typo globale, etc.
+  - Ajouter ici des styles partagés si vous ne gérez pas un fichier global main.css
+  - Exemple : personnalisation de la couleur de fond, typo globale, etc.
 */
 </style>
